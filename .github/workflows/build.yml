@@ -14,6 +14,9 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Install LLVM (Fix libclang issue)
+        run: choco install llvm -y
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -48,6 +51,11 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+
+      - name: Install LLVM (Fix libclang issue)
+        run: |
+          brew install llvm
+          echo "LIBCLANG_PATH=$(brew --prefix llvm)/lib" >> $GITHUB_ENV
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
