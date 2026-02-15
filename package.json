@@ -3,20 +3,22 @@
   "version": "1.0.0",
   "description": "File to Excel converter app",
   "license": "ISC",
-  "author": "",
   "type": "commonjs",
   "main": "electron/main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder",
-    "build:win": "electron-builder --win",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build:rust": "cd rust-core && cargo build --release",
+    "build": "npm run build:rust && electron-builder",
+    "build:win": "npm run build:rust && electron-builder --win",
+    "build:mac": "npm run build:rust && electron-builder --mac"
   },
   "build": {
     "appId": "com.filetoexcel.app",
+    "directories": {
+      "output": "dist"
+    },
     "win": {
-      "target": "nsis",
-      "signAndEditExecutable": false
+      "target": "nsis"
     },
     "mac": {
       "target": "dmg"
@@ -26,11 +28,11 @@
       {
         "from": "rust-core/target/release/",
         "to": "rust-core/target/release/",
-        "filter": ["**/*"]
+        "filter": ["rust-core.exe", "rust-core"]
       }
     ],
     "asarUnpack": [
-      "**/rust-core.exe"
+      "rust-core/target/release/**"
     ]
   },
   "devDependencies": {
