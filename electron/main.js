@@ -95,14 +95,18 @@ ipcMain.handle("convert-file", async (_, filePath) => {
   }
 
   return new Promise((resolve, reject) => {
-    execFile(rustExe, [filePath], { cwd }, async (err, stdout, stderr) => {
+    execFile(rustExe, [filePath], { cwd , maxBuffer: 50 * 1024 * 1024 }, async (err, stdout, stderr) => {
       if (err) {
         // include stderr in the error for better diagnostics
-        err.message = `${err.message}\nstderr: ${String(stderr || '')}`;
+        err.message = `Rust conversion failed:\n${err.message}\n${stderr || ""}`
         return reject(err);
       }
 
       const base64String = String(stdout || '').trim();
+
+      if (!base64String) {
+          return reject(new Error("Rust returned empty output"));
+      }
       
       // Decode base64 to buffer
       let fileBuffer;
@@ -135,6 +139,7 @@ ipcMain.handle('save-file', async (_, { srcPath, suggestedName }) => {
     if (canceled || !dest) return null;
 
     await fs.copyFile(srcPath, dest);
+
     return dest;
   } catch (err) {
     throw err;

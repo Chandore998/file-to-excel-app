@@ -182,6 +182,7 @@ function renderFileList() {
         if (saved) {
           droppedFiles[idx].savedPath = saved;
           droppedFiles[idx].status = 'saved';
+          droppedFiles[idx].result = `File saved to: ${saved}`;
           renderFileList();
         }
       } catch (err) {
