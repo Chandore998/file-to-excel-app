@@ -14,11 +14,15 @@
   },
   "build": {
     "appId": "com.filetoexcel.app",
+    "productName": "File To Excel Converter",
+    "executableName": "file-to-excel",
+    "artifactName": "FileToExcel-Installer-${version}.${ext}",
     "directories": {
       "output": "dist"
     },
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "signAndEditExecutable": false
     },
     "mac": {
       "target": "dmg"
