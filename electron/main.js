@@ -58,18 +58,24 @@ ipcMain.handle("file-selected", async (_, filePaths) => {
 });
 
 ipcMain.handle("convert-file", async (_, filePath) => {
+  // Determine rust binary name based on platform
+  const rustBinary =
+    process.platform === "win32"
+      ? "rust-core.exe"
+      : "rust-core";
+
   // Resolve path to converter executable for dev vs packaged app.
   let rustExe;
   if (app.isPackaged) {
     // When packaged, look for the exe in common unpacked locations:
-    const unpacked = path.join(process.resourcesPath, 'app.asar.unpacked', 'rust-core', 'target', 'release', 'rust-core.exe');
-    const extraResourcesPath = path.join(process.resourcesPath, 'rust-core', 'target', 'release', 'rust-core.exe');
+    const unpacked = path.join(process.resourcesPath, 'app.asar.unpacked', 'rust-core', 'target', 'release', rustBinary);
+    const extraResourcesPath = path.join(process.resourcesPath, 'rust-core', 'target', 'release', rustBinary);
     if (await awaitExists(unpacked)) rustExe = unpacked;
     else if (await awaitExists(extraResourcesPath)) rustExe = extraResourcesPath;
     else rustExe = unpacked; // fallback path for clear error message
   } else {
     // Development layout: sibling rust-core folder
-    rustExe = path.join(__dirname, '..', 'rust-core', 'target', 'release', 'rust-core.exe');
+    rustExe = path.join(__dirname, '..', 'rust-core', 'target', 'release', rustBinary);
   }
 
   const cwd = path.dirname(rustExe);

@@ -18,6 +18,9 @@
       "target": "nsis",
       "signAndEditExecutable": false
     },
+    "mac": {
+      "target": "dmg"
+    },
     "forceCodeSigning": false,
     "extraResources": [
       {
